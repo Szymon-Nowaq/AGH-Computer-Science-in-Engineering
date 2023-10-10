@@ -187,6 +187,11 @@ presidents['Start'] = pd.to_numeric(presidents['RuleYears'].str[:4])
 presidents['RuleYears'] = presidents['End'] - presidents['Start']
 presidents.to_csv('prsd.csv')
 
+for i in range(5):
+    for j in range(len(presidents)):
+        print(presidents.iloc[j,i],', ', end='')
+    print('\n')
+
 USA_prsd = TwoWayList()
 for i in range(len(presidents)):
     USA_prsd.append(presidents.iloc[i,:5])
@@ -196,13 +201,13 @@ USA_prsd.insert(presidents.iloc[0,:5], 10)
 USA_prsd.delete_by_index(10)
 
 #zad 1
-USA_prsd.get_list_of_shortest_cadence().show()
+#USA_prsd.get_list_of_shortest_cadence().show()
 
 #zad 2
-USA_prsd.get_list_of_all_prsd_from_party('Republican').show()
+#USA_prsd.get_list_of_all_prsd_from_party('Republican').show()
 
 #zad 3
-USA_prsd.get_prsd_by_year(1841).show()
+#USA_prsd.get_prsd_by_year(1841).show()
 
 #USA_prsd.show_by_index(10)
 #USA_prsd.show_by_index(20)
@@ -211,4 +216,4 @@ USA_prsd.get_prsd_by_year(1841).show()
 USA_prsd.delete_by_index(0)
 #USA_prsd.show()
 USA_prsd.delete_by_index(8)
-USA_prsd.show()
+#USA_prsd.show()
