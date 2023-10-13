@@ -22,7 +22,7 @@ class Queue:
     def empty(self):
         return self.head is None
 
-    def enqueue(self, new_Object):
+    def enqueue(self, new_Object : Object()):
         new_Object.index = self.count
         self.count += 1
         if self.empty():
@@ -35,7 +35,7 @@ class Queue:
             new_Object.next = self.end
             self.tail.next = new_Object
             self.tail = new_Object
-            self.end.prev = new_Object
+            self.end.prev = self.tail
 
     def show(self):
         if self.empty():
@@ -122,17 +122,20 @@ class Queue:
         return self.end
     
     
+def zad3(list):
+    que = Queue()
+    for i in range(len(list)):
+        if i % 3 == 0:
+            que.enqueue(Object(list[i]))
+    return que
+    
 
-list_len = 5
+list_len = 12
 np.random.seed(42)
 values = np.random.randint(0,10,list_len)
-list = Queue()
 
-for i in range(list_len):
-    list.enqueue(Object(values[i]))
+print(values)
 
-list.show()
-list.enqueue(Object(11))
-list.show()
-list.dequeue()
-list.show()
+que = zad3(values)
+que.show()
+
