@@ -1,0 +1,3 @@
+﻿  04po.cpp
+C:\Pulpit\OneDrive - Akademia Górniczo-Hutnicza im. Stanisława Staszica w Krakowie\Studia\Obiektowe\04\04po\04po.cpp(23,14): warning C4244: "argument": konwersja z "time_t" do "unsigned int", możliwa utrata danych
+  04po.vcxproj -> C:\Pulpit\OneDrive - Akademia Górniczo-Hutnicza im. Stanisława Staszica w Krakowie\Studia\Obiektowe\04\04po\x64\Debug\04po.exe
