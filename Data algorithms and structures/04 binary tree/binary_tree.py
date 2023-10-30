@@ -6,6 +6,8 @@ class Node:
         self.right = None
         self.parent = parent
         self.val = key
+    def show(self):
+        print('[',self.val,']', end = '', sep='')
 
 class BinaryTree:
     def __init__(self):
@@ -52,9 +54,19 @@ class BinaryTree:
             if current.right == None:
                 return current
             current = current.right
+    
+    def show(self):
+        current = self.find_min()
+        max_val = self.find_max().val
+        while current.val != max_val:
+            current.show()
+            print(', ', end='')
+            current = find_next(current)
+        current.show()
+        print()
 
-    def get_by_value(self, val):
-        current = self.root
+def get_by_value(root : Node, val):
+        current = root
         while current.val != val:
             if current == None:
                 print('value doesnt exist')
@@ -64,6 +76,31 @@ class BinaryTree:
             else:
                 current = current.right
         return current
+
+def delete(root : Node, val):
+    to_del = get_by_value(root,val)
+    if to_del.left == None and to_del.right == None:
+        if is_younger_son(to_del):
+            to_del.parent.left = None
+        else:
+            to_del.parent.right = None
+    elif to_del.left == None:
+        if is_younger_son(to_del):
+            to_del.parent.left = to_del.right
+        else:
+            to_del.parent.right = to_del.right
+        to_del.right.parent = to_del.parent
+    elif to_del.right == None:
+        if is_younger_son(to_del):
+            to_del.parent.left = to_del.left
+        else:
+            to_del.parent.right = to_del.left
+        to_del.left.parent = to_del.parent
+    else:
+        to_swap = find_min(to_del.right)
+        to_del.val = to_swap.val
+        delete(to_del.right, to_swap.val) 
+
 
 def is_younger_son(node: Node):
     if node.parent != None:
@@ -126,6 +163,32 @@ def find_max(node : Node):
             return current
         current = current.right
 
+def postorder(root : Node):
+    if root == None:
+        return
+    postorder(root.left)
+    postorder(root.right)
+    root.show()
+    print(', ', end='')
+    return
+
+def inorder(root : Node):
+    if root == None:
+        return
+    inorder(root.left)
+    root.show()
+    print(', ', end='')
+    inorder(root.right)
+    return
+
+def preorder(root : Node):
+    if root == None:
+        return
+    root.show()
+    print(', ', end='')
+    preorder(root.right)
+    preorder(root.left)
+    return
     
 
 # Przykład użycia:
@@ -140,9 +203,33 @@ bt.insert(20)
 bt.insert(2)
 bt.insert(4)
 bt.insert(13)
-bt.insert(9)
+bt.insert(9)'''
+#bt.insert(24)
+#bt.insert(19)
 
-print(find_prev(bt.get_by_value(15)).val)
+bt.insert(7)
+bt.insert(5)
+bt.insert(9)
+bt.insert(2)
+bt.insert(6)
+bt.insert(8)
+bt.insert(11)
+bt.insert(10)
+bt.insert(12)
+
+bt.show()
+delete(bt.root,8)
+print("po usunieciu 8:")
+bt.show()
+
+print("\npreorder: ")
+preorder(bt.root)
+print("\npostorder: ")
+postorder(bt.root)
+print("\ninorder: ")
+inorder(bt.root)
+
+'''print(find_prev(bt.get_by_value(15)).val)
 print(find_prev(bt.get_by_value(17)).val)
 print(find_prev(bt.get_by_value(4)).val)
 print(find_prev(bt.get_by_value(20)).val)
@@ -156,7 +243,7 @@ print(find_next(bt.get_by_value(6)).val)
 print(find_next(bt.get_by_value(17)).val)
 print(find_next(bt.get_by_value(20)).val)'''
 
-tab = np.arange(100)
+'''tab = np.arange(100)
 
 np.random.shuffle(tab)
 #print(tab)
@@ -170,5 +257,4 @@ for i in range(100):
 
 print('\n\nNEXT TEST:')
 for i in range(100):
-    print("next of",i,"is: ",find_next(bt.get_by_value(i)).val)
-
+    print("next of",i,"is: ",find_next(bt.get_by_value(i)).val)'''
