@@ -65,6 +65,24 @@ class BinaryTree:
         current.show()
         print()
 
+def remove(root : Node):
+    if root.right != None and root.left != None:
+        if root.val > 10:
+            delete(find_next(root))
+        else:
+            delete(find_prev(root))
+    else:
+        print("wrong root")
+        return
+
+def height(root : Node):
+    if root is None:
+        return -1
+    else:
+        left_height = height(root.left)
+        right_height = height(root.right)
+        return max(left_height, right_height) + 1
+
 def get_by_value(root : Node, val):
         current = root
         while current.val != val:
@@ -101,6 +119,29 @@ def delete(root : Node, val):
         to_del.val = to_swap.val
         delete(to_del.right, to_swap.val) 
 
+def delete(root : Node):
+    to_del = root
+    if to_del.left == None and to_del.right == None:
+        if is_younger_son(to_del):
+            to_del.parent.left = None
+        else:
+            to_del.parent.right = None
+    elif to_del.left == None:
+        if is_younger_son(to_del):
+            to_del.parent.left = to_del.right
+        else:
+            to_del.parent.right = to_del.right
+        to_del.right.parent = to_del.parent
+    elif to_del.right == None:
+        if is_younger_son(to_del):
+            to_del.parent.left = to_del.left
+        else:
+            to_del.parent.right = to_del.left
+        to_del.left.parent = to_del.parent
+    else:
+        to_swap = find_min(to_del.right)
+        to_del.val = to_swap.val
+        delete(to_del.right, to_swap.val) 
 
 def is_younger_son(node: Node):
     if node.parent != None:
@@ -193,19 +234,7 @@ def preorder(root : Node):
 
 # Przykład użycia:
 bt = BinaryTree()
-'''bt.insert(15)
-bt.insert(6)
-bt.insert(18)
-bt.insert(3)
-bt.insert(7)
-bt.insert(17)
-bt.insert(20)
-bt.insert(2)
-bt.insert(4)
-bt.insert(13)
-bt.insert(9)'''
-#bt.insert(24)
-#bt.insert(19)
+
 
 bt.insert(7)
 bt.insert(5)
@@ -215,46 +244,23 @@ bt.insert(6)
 bt.insert(8)
 bt.insert(11)
 bt.insert(10)
+bt.insert(16)
+bt.insert(17)
+bt.insert(14)
 bt.insert(12)
 
+
 bt.show()
-delete(bt.root,8)
-print("po usunieciu 8:")
+print('height: ', height(bt.root))
+#delete(bt.root,8)
+#print("po usunieciu 8:")
+#bt.show()
+
+#print(height(bt.root))
+
+remove(get_by_value(bt.root, 17))
 bt.show()
+print('height: ', height(bt.root))
 
-print("\npreorder: ")
-preorder(bt.root)
-print("\npostorder: ")
-postorder(bt.root)
-print("\ninorder: ")
-inorder(bt.root)
-
-'''print(find_prev(bt.get_by_value(15)).val)
-print(find_prev(bt.get_by_value(17)).val)
-print(find_prev(bt.get_by_value(4)).val)
-print(find_prev(bt.get_by_value(20)).val)
-print(find_prev(bt.get_by_value(2)).val)
-
-print('\n')
-
-print(find_next(bt.get_by_value(15)).val)
-print(find_next(bt.get_by_value(13)).val)
-print(find_next(bt.get_by_value(6)).val)
-print(find_next(bt.get_by_value(17)).val)
-print(find_next(bt.get_by_value(20)).val)'''
-
-'''tab = np.arange(100)
-
-np.random.shuffle(tab)
-#print(tab)
-
-for value in tab:
-    bt.insert(value)
-
-print('PREV TEST:')
-for i in range(100):
-    print("prev of",i,"is: ",find_prev(bt.get_by_value(i)).val)
-
-print('\n\nNEXT TEST:')
-for i in range(100):
-    print("next of",i,"is: ",find_next(bt.get_by_value(i)).val)'''
+remove(bt.root)
+bt.show()
