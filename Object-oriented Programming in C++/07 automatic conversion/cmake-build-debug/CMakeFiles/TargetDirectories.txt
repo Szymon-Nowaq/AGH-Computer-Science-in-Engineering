@@ -1,0 +1,3 @@
+C:/Users/smonn/CLionProjects/PO rzutowania i konwersje (zabawa)/cmake-build-debug/CMakeFiles/untitled.dir
+C:/Users/smonn/CLionProjects/PO rzutowania i konwersje (zabawa)/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/smonn/CLionProjects/PO rzutowania i konwersje (zabawa)/cmake-build-debug/CMakeFiles/rebuild_cache.dir
