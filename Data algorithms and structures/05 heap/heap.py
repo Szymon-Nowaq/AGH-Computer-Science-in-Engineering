@@ -31,7 +31,7 @@ class Heap:
                 temp.right = new_node = Node(key, temp, self.n)
                 self.hierarchia_kastowa(temp.right)
         
-    def hierarchia_kastowa(self, node : Node):
+    def hierarchia_kastowa_up(self, node : Node):
         while node.id != 1:
             if node.val > node.parent.val:
                 temp = node.parent.val
@@ -41,12 +41,45 @@ class Heap:
                 break
             node = node.parent
 
+    def hierarchia_kastowa_down(self, node : Node):
+        while node.id != 1:
+            if node.left == None:
+                if node.val > node.right:
+                    temp = node.right.val
+                    node.right.val = node.val
+                    node.val = temp
+                    node = node.right
+                else:
+                    break
+            elif node.right == None:
+                if node.val > node.left:
+                    temp = node.left.val
+                    node.left.val = node.val
+                    node.val = temp
+                    node = node.left
+                else:
+                    break
+            elif node.val < node.right.val or node.val < node.left.val:
+                if node.right.val > node.left.val: 
+                    temp = node.right.val
+                    node.right.val = node.val
+                    node.val = temp
+                    node = node.right
+                else:
+                    temp = node.left.val
+                    node.left.val = node.val
+                    node.val = temp
+                    node = node.left
+            elif node.left == None and node.right == None:
+                break
+
     def wypierdol(self, val):
         to_delete = self.find_by_value(val)
         if to_delete == None:
             print('value not in the heap')
             return None
         self.n -= 1
+        if to_delete.val
 
     def make_path(self):
         if self.n == 2 or self.n == 3:
