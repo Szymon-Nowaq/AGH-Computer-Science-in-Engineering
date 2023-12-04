@@ -24,6 +24,7 @@ class TwoWayList:
     def append(self, data):
         new_Object = Object(data)
         self.count += 1
+        new_Object.index = self.count    
         if self.is_empty():
             self.head.next = new_Object
             new_Object.prev = self.head
@@ -37,7 +38,7 @@ class TwoWayList:
 
     def prepend(self, data):
         new_Object = Object(data)
-        new_Object.index = 0
+        new_Object.index = 1
         self.count += 1
         if self.is_empty():
             self.head = new_Object
@@ -86,6 +87,7 @@ class TwoWayList:
         current = self.head
         while current != self.tail:
             current.show()
+            #print(current.index, end=None)
             current = current.next
         print("End of the list\n")
     
@@ -103,15 +105,9 @@ class TwoWayList:
             current.show()
     
     def find_element(self, index):
-        half = self.count / 2
-        if index <= half:
-            current = self.head
-            while current.index != index:
-                current = current.next
-        else:
-            current = self.tail
-            while current.index != index:
-                current = current.prev
+        current = self.head.next
+        while current.index != index:
+            current = current.next
         return current
             
     def delete_by_index(self, index):
@@ -154,31 +150,44 @@ class TwoWayList:
                 last_swapG = last_swap
             else:
                 break
-        print(ite)
+    
+    def sort_insert(self):
+        count = self.count + 1
+        for i in range(2, count):
+            to_insert = self.find_element(i)
+            to_compare = self.find_element(i - 1)
+            to_insert.prev.next = to_insert.next
+            to_insert.next.prev = to_insert.prev
+            current = to_insert.next
+            while current:
+                    current.index -= 1
+                    current = current.next
+            while to_compare != self.head and to_insert.data < to_compare.data:
+                to_compare = to_compare.prev
+            #print(to_insert.data, to_compare.next.index)
+            self.insert(to_insert.data, to_compare.next.index)
+            #self.show()
         
     
-list = TwoWayList()
-'''list.insert_sorted(1)
-list.insert_sorted(3)
-list.insert_sorted(4)
-list.insert_sorted(5)
-list.insert_sorted(8)
+list_bubble = TwoWayList()
+list_insert = TwoWayList()
 
-list.show()
-
-list.insert_sorted(6)
-list.insert_sorted(2)
-
-list.show()'''
-
-np.random.seed(41)
-random_num = np.random.randint(0,100,100)
-
-for i in range(len(random_num)):
-    list.append(random_num[i])
+np.random.seed(40)
+random_num1 = np.random.randint(0,10,10)
+random_num2 = np.random.randint(0,10,10)
 
 
-#print(random_num)
-list.show()
-list.sort_bubble()
-list.show()
+for i, j in zip(random_num1, random_num2):
+    list_bubble.append(i)
+    list_insert.append(j)
+
+
+print('BUBBLE:')
+list_bubble.show()
+list_bubble.sort_bubble()
+list_bubble.show()
+
+print('\nINSERT:')
+list_insert.show()
+list_insert.sort_insert()
+list_insert.show()
