@@ -4,14 +4,15 @@ class Node():
     def __init__(self, label):
         self.label = label
         self.ver_list = []
+        self.visited = False
 
     def add_vert(self, vert):
         self.ver_list.append(vert)
 
     def __str__(self):
         vert_str = '\n'.join('\t' + str(vert) for vert in self.ver_list)
-        return f"Node(Label: {self.label})"
-        #return f"Node(Label: {self.label}, Verticles: \n{vert_str})" 
+        #return f"Node(Label: {self.label})"
+        return f"Node(Label: {self.label + 1}, Verticles: \n{vert_str})" 
         
 
 class Verticle():
@@ -33,15 +34,15 @@ class Graph():
                 vert.start.add_vert(vert)
                 
             self.neigh_matrix = np.zeros((self.node_count, self.node_count)) 
-            for i, j in connections[:,:2].astype(int):
-                self.neigh_matrix[i,j] = 1
-            print('macierz sasiedztwa:\n', self.neigh_matrix)
+            for i, j, w in connections[:,:3].astype(int):
+                self.neigh_matrix[i,j] = w
+            #print('macierz sasiedztwa:\n', self.neigh_matrix)
 
             self.incident = np.zeros((self.ver_count, self.node_count))
             for i, vert in enumerate(self.verticles):
-                self.incident[i, vert.start.label] = 1
-                self.incident[i, vert.end.label] = 1
-            print('\nmacierz incydencji:\n', self.incident)
+                self.incident[i, vert.start.label] = vert.wage
+                self.incident[i, vert.end.label] = -vert.wage
+            #print('\nmacierz incydencji:\n', self.incident)
 
             self.neigh_list = []
             for node in self.nodes:
@@ -49,11 +50,48 @@ class Graph():
                 for neight in node.ver_list:
                     node_list.append(neight.end)
                 self.neigh_list.append(node_list) 
-            print('\nlista sasiedztwa:\n')
-            for i, list in enumerate(self.neigh_list):
+            #print('\nlista sasiedztwa:\n')
+            '''for i, list in enumerate(self.neigh_list):
                 print('\nsasiedzi wezla ', self.nodes[i])
                 for neigh in list:
-                    print(neigh)
+                    print(neigh)'''
+    
+    def DFS(self):
+        stack = [self.nodes[0]]
+        print(stack[0])
+        stack[0].visited = True
+        vis_count = 1
+        while vis_count != self.node_count:
+            current_node = stack[-1]
+            next_node = seek_next(current_node)
+            if next_node == None:
+                stack.pop()
+            else:
+                stack.append(next_node)
+                next_node.visited = True
+                vis_count += 1
+                print(next_node)
+
+    def BFS(self):
+        queue = [self.nodes[0]]   
+        vis_count  = 0
+        
+        while queue and vis_count < self.node_count:  
+            current_node = queue.pop(0)
+            current_node.visited = True
+            vis_count += 1
+            print(current_node)  
+            for vert in current_node.ver_list:  
+                if not vert.end.visited:  
+                    queue.append(vert.end)  
+                    
+
+def seek_next(node: Node):
+    for ver in node.ver_list:
+        if ver.end.visited == False:
+            return ver.end
+    return None
+
 
         
 
@@ -70,15 +108,16 @@ def read_txt(filename):
             wages = indexes_to_correct[::3]
             indexes_to_correct = np.array([val for i, val in enumerate(indexes_to_correct) if (i+1)%3 != 0])
         else:
-            wages = np.zeros(params[1])
+            wages = np.zeros(params[1]) + 1
         indexes_to_correct -= indexes_to_correct.min()
         unique_sorted = np.sort(np.unique(indexes_to_correct))
         value_mapping = {value: i for i, value in enumerate(unique_sorted)}
         correct_indexes = np.array([value_mapping[value] for value in indexes_to_correct]).reshape((params[1], 2))
         return params[0], params[1], np.column_stack([correct_indexes.astype(int), wages]) 
 
-graf1 = Graph("input1.txt")
-#graf2 = Graph("input2.txt")
+graf1 = Graph("DSF.txt")
+graf2 = Graph("BSF.txt")
+graf1.BFS()
 
 
 
