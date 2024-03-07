@@ -1,27 +1,5 @@
 import numpy as np
 
-class UnionFind:
-    def __init__(self, size):
-        self.parent = list(range(size))
-        self.rank = [0] * size
-
-    def find(self, node):
-        if self.parent[node] != node:
-            self.parent[node] = self.find(self.parent[node])
-        return self.parent[node]
-
-    def union(self, node1, node2):
-        root1 = self.find(node1)
-        root2 = self.find(node2)
-        if root1 != root2:
-            if self.rank[root1] > self.rank[root2]:
-                self.parent[root2] = root1
-            elif self.rank[root1] < self.rank[root2]:
-                self.parent[root1] = root2
-            else:
-                self.parent[root2] = root1
-                self.rank[root1] += 1
-
 class Node():
     def __init__(self, label):
         self.label = label
@@ -48,35 +26,41 @@ class Verticle():
         
 
 class Graph():
-    def __init__(self, filename : str):
-            self.node_count, self.ver_count, connections = read_txt(filename)
-            self.nodes = [Node(label) for label in np.arange(self.node_count)]
-            self.verticles = [Verticle(self.nodes[int(start)], self.nodes[int(end)], wage) for start, end, wage in connections]
-            for vert in self.verticles:
-                vert.start.add_vert(vert)
-                
-            self.neigh_matrix = np.zeros((self.node_count, self.node_count)) 
-            for i, j, w in connections[:,:3].astype(int):
-                self.neigh_matrix[i,j] = w
-            #print('macierz sasiedztwa:\n', self.neigh_matrix)
+    def __init__(self, filename: str):
+        self.node_count, self.ver_count, connections = read_txt(filename)
+        self.nodes = [Node(label) for label in np.arange(self.node_count)]
+        self.verticles = []
 
-            self.incident = np.zeros((self.ver_count, self.node_count))
-            for i, vert in enumerate(self.verticles):
-                self.incident[i, vert.start.label] = vert.wage
-                self.incident[i, vert.end.label] = -vert.wage
-            #print('\nmacierz incydencji:\n', self.incident)
+        for start, end, wage in connections:
+            # Tworzenie dwóch krawędzi dla każdego połączenia: jednej od start do end, a drugiej od end do start
+            vert1 = Verticle(self.nodes[int(start)], self.nodes[int(end)], wage)
+            vert2 = Verticle(self.nodes[int(end)], self.nodes[int(start)], wage)
 
-            self.neigh_list = []
-            for node in self.nodes:
-                node_list = []
-                for neight in node.ver_list:
-                    node_list.append(neight.end)
-                self.neigh_list.append(node_list) 
-            #print('\nlista sasiedztwa:\n')
-            '''for i, list in enumerate(self.neigh_list):
-                print('\nsasiedzi wezla ', self.nodes[i])
-                for neigh in list:
-                    print(neigh)'''
+            # Dodawanie obu krawędzi do odpowiednich węzłów
+            self.nodes[int(start)].add_vert(vert1)
+            self.nodes[int(end)].add_vert(vert2)
+
+            # Dodawanie krawędzi do listy krawędzi
+            self.verticles.extend([vert1, vert2])
+
+        # Tworzenie macierzy sąsiedztwa, incydencji i listy sąsiedztwa
+        self.neigh_matrix = np.zeros((self.node_count, self.node_count)) 
+        for i, j, w in connections:
+            self.neigh_matrix[i, j] = w
+            self.neigh_matrix[j, i] = w  # Dodanie symetrycznego elementu
+
+        self.incident = np.zeros((2 * self.ver_count, self.node_count))
+        for i, vert in enumerate(self.verticles):
+            self.incident[i, vert.start.label] = vert.wage
+            self.incident[i, vert.end.label] = -vert.wage
+
+        self.neigh_list = []
+        for node in self.nodes:
+            node_list = []
+            for neight in node.ver_list:
+                node_list.append(neight.end)
+            self.neigh_list.append(node_list)
+
     
     def DFS(self):
         stack = [self.nodes[0]]
@@ -127,28 +111,6 @@ class Graph():
         for vert in unique_vert:
             print(vert)
 
-    def KruskalMST(self):
-        uf = UnionFind(self.node_count)
-
-        sorted_edges = sorted(self.verticles, key=lambda x: x.wage)
-        mst = []
-        for edge in sorted_edges:
-            if uf.find(edge.start.label) != uf.find(edge.end.label):
-                uf.union(edge.start.label, edge.end.label)
-                mst.append(edge)
-        
-    
-        print("Początkowa lista krawędzi i ich wag:")
-        for edge in sorted_edges:
-            print(f"Verticle(Start: {edge.start.label}, End: {edge.end.label}, Wage: {edge.wage})")
-        
-        print("\nLista krawędzi minimalnego drzewa rozpinającego i suma wag:")
-        total_weight = 0
-        for edge in mst:
-            total_weight += edge.wage
-            print(f"Verticle(Start: {edge.start.label}, End: {edge.end.label}, Wage: {edge.wage})")
-        print(f"Suma wag: {total_weight}")
-
 
 def read_txt(filename):
     with open(filename, 'r') as file:
@@ -172,8 +134,7 @@ def read_txt(filename):
 
 graf1 = Graph("zad2.txt")
 #graf2 = Graph("BSF.txt")
-graf1.KruskalMST()
-
+graf1.DFS()
 
 
 
